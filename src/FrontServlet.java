@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import etu1984.framework.Mapping;
-import etu1984.framework.annot.UrlA;
 
 public class FrontServlet extends HttpServlet{
+
+    HashMap<String,Mapping> mappingUrls = new HashMap<>();
+
 
     public void getUrl(PrintWriter out,HttpServletRequest req, HttpServletResponse resp) {
         String requete = req.getRequestURI();
