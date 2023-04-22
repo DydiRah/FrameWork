@@ -32,11 +32,11 @@ public class FrontServlet extends HttpServlet{
         File dir = new File(pack);
         File[] files = dir.listFiles();
         for (File file : files) {
-            Mapping temp = new Mapping();
             String nameClass = file.getName().replace(".class","");
             Class<?> c = Class.forName("modele."+nameClass);
             Method[] ms = c.getDeclaredMethods();
             for (Method m : ms) {
+                Mapping temp = new Mapping();
                 if(m.isAnnotationPresent(UrlA.class)) {
                     temp.setClassName(nameClass);
                     temp.setMethod(m.getName());
@@ -52,18 +52,8 @@ public class FrontServlet extends HttpServlet{
         String[] infoReq = requete.split("/");
         if(infoReq.length == 3){
             return infoReq[2];
-            //out.println("Page: " + infoReq[2]);
-            //out.println("Les donnees sont:");
         } 
         return null;
-        // if(values != null){
-        //     String[] vals = values.split("&&");
-        //     if(vals.length != 0){
-        //         for (String val : vals) {
-        //             out.println(val); 
-        //         }
-        //     }
-        // }
     }
 
 
@@ -77,9 +67,14 @@ public class FrontServlet extends HttpServlet{
                         Class<?> c = Class.forName("modele."+value.getClassName());
                         Method[] ms = c.getDeclaredMethods();
                         for (Method m : ms) {
-                            if(m.getName().equals(value.getMethod())) {
+                            if(m.getName().equals(value.getMethod()) && m.invoke(c.newInstance()) instanceof ModelView) {
                                 ModelView nomView = (ModelView) m.invoke(c.newInstance());
-                                out.println("view:"+nomView.getUrl());
+                                HashMap<String,Object> dataView = nomView.getData();
+                                out.println("View:"+nomView.getUrl());
+                                dataView.forEach((attribut,valeur) -> {
+                                    out.println(attribut+"   "+valeur);
+                                    req.setAttribute(attribut, valeur);
+                                });
                                 RequestDispatcher rd = req.getRequestDispatcher(nomView.getUrl()+".jsp");
                                 rd.forward(req,resp);   
                             }
