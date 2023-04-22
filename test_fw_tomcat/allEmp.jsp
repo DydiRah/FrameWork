@@ -8,5 +8,7 @@
 </head>
 <body>
     <h1>FindAll Emp </h1>
+    <% out.print(request.getAttribute("nom"));%>
+    <% out.print(request.getAttribute("salaire"));%>
 </body>
 </html>
