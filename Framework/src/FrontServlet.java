@@ -2,8 +2,10 @@ package etu1984.framework.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -65,6 +67,27 @@ public class FrontServlet extends HttpServlet{
                 try{
                     if(key.equals(url)){
                         Class<?> c = Class.forName("modele."+value.getClassName());
+
+                        ///ajouter
+                        Enumeration<String> parameterNames = req.getParameterNames();
+                        while (parameterNames.hasMoreElements()) {
+                            String paramName = parameterNames.nextElement();
+                            Method[] ms = c.getDeclaredMethods();
+                            for (Method m : ms) {
+                                String nameV1 = m.getName().replaceAll("set","");
+                                nameV1 = nameV1.toLowerCase();
+                                if(nameV1.equals(paramName)) {
+                                    String[] paramValues = req.getParameterValues(paramName);
+                                    for (int i = 0; i < paramValues.length; i++) {
+                                        String paramValue = paramValues[i];
+                                        out.println("Param: "+paramName+" : "+paramValue); 
+                                        m.invoke(c.newInstance(), paramValue);
+                                    }
+                                } 
+                            }
+                        }
+                        
+                        ///view
                         Method[] ms = c.getDeclaredMethods();
                         for (Method m : ms) {
                             if(m.getName().equals(value.getMethod()) && m.invoke(c.newInstance()) instanceof ModelView) {
@@ -77,7 +100,7 @@ public class FrontServlet extends HttpServlet{
                                 });
                                 RequestDispatcher rd = req.getRequestDispatcher(nomView.getUrl()+".jsp");
                                 rd.forward(req,resp);   
-                            }
+                            } 
                         }
                         out.println(key + " : " + value.getClassName() + " , " + value.getMethod());  
                     }
