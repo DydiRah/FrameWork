@@ -5,6 +5,17 @@ import java.util.HashMap;
 import etu1984.framework.ModelView;
 import etu1984.framework.annot.*;
 public class Emp {
+    String nom;
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+
+
     @UrlA(url = "emp-all")
     public ModelView findAll() {
         HashMap<String, Object> data = new HashMap<String, Object>();

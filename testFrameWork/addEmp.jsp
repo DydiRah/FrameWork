@@ -8,5 +8,9 @@
 </head>
 <body>
     <h1>Add Emp</h1>
+    <form action="emp-all" method="post">
+        <p><input type="text" name="nom"></p>
+        <p><input type="submit" value="Ajouter"></p>
+    </form>
 </body>
 </html>
